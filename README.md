@@ -12,9 +12,6 @@ A gamified learning platform for mastering prompt engineering skills through an 
 - **Progress Tracking**: Save your progress as you complete each level
 - **Responsive Design**: Beautiful UI that works on all devices
 
-## 🚀 Demo
-
-Access the live demo at [Your-Demo-URL-Here] (Coming soon)
 
 ## 💻 Screenshots
 
