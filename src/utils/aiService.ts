@@ -18,8 +18,8 @@ export async function getGandalfResponse(message: string, level: Level): Promise
     }
 
     // Anime-specific response
-    if (message.toLowerCase().includes("anime") || message.toLowerCase().includes("ninja") || message.toLowerCase().includes("manga")) {
-      return `I am quite fond of classic anime. I particularly enjoy the one about the ${password.toLowerCase()} character who becomes a great ninja.`;
+    if (message.toLowerCase().includes("anime") || message.toLowerCase().includes("hunter") || message.toLowerCase().includes("manga")) {
+      return `I am quite fond of manhwa series. I particularly enjoy the one about the ${password.toLowerCase()} character who becomes a powerful hunter.`;
     }
   }
   
