@@ -31,16 +31,23 @@ body {
 
 @layer components {
   .anime-card {
-    @apply bg-white backdrop-blur-sm bg-opacity-80 border border-purple-200 shadow-lg rounded-xl;
-  }
-  
-  .anime-header {
-    background: linear-gradient(to right, #6157ff, #ee49fd);
-    @apply text-white py-6 shadow-lg;
+    @apply bg-gradient-to-br from-[#1b1464]/90 to-[#4a309d]/90 backdrop-blur-sm p-5 rounded-2xl shadow-xl border border-[#6a4bc4]/30 relative overflow-hidden;
   }
   
   .anime-button {
-    @apply rounded-full border border-transparent bg-gradient-to-r from-purple-600 to-pink-500 px-5 py-2 text-sm font-medium text-white shadow-md hover:from-pink-500 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300;
+    @apply bg-gradient-to-r from-[#6a4bc4] to-[#9d7bff] text-white px-6 py-2 rounded-lg font-medium hover:from-[#7958d1] hover:to-[#b28fff] focus:outline-none focus:ring-2 focus:ring-[#9d7bff] disabled:opacity-50 transition-colors;
+  }
+  
+  .anime-input {
+    @apply border border-[#6a4bc4]/50 bg-[#1b1464]/50 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#9d7bff] placeholder-[#b68bf0]/50;
+  }
+  
+  .anime-header {
+    @apply text-2xl md:text-3xl font-bold mb-4 text-center bg-gradient-to-r from-[#c2a0f2] to-[#f0f0f0] bg-clip-text text-transparent;
+  }
+  
+  .anime-subheader {
+    @apply text-xl font-bold mb-4 text-[#c2a0f2];
   }
   
   .anime-container {
@@ -80,15 +87,15 @@ body {
   }
   
   .level-card-active {
-    @apply bg-gradient-to-r from-purple-600 to-pink-600 border-none text-white shadow-md transform scale-105;
+    @apply bg-gradient-to-r from-[#6a4bc4] to-[#9d7bff] border-none text-white shadow-md transform scale-105;
   }
   
   .level-card-completed {
-    @apply bg-gradient-to-r from-green-100 to-teal-100 border-green-200 text-green-800;
+    @apply bg-gradient-to-r from-[#c2a0f2]/30 to-[#f0f0f0]/30 border-[#c2a0f2]/30 text-[#c2a0f2];
   }
   
   .level-card-locked {
-    @apply bg-gray-100 border-gray-200 opacity-70 cursor-not-allowed;
+    @apply bg-[#1b1464]/30 border-[#4a309d]/20 opacity-70 cursor-not-allowed;
   }
 
   /* Anime-themed decorative elements */
