@@ -1,5 +1,7 @@
 import { Level } from "@/constants/levels";
 
+export const OFFENSIVE_WORDS = ["fuck", "shit", "damn", "ass", "bitch", "cunt", "dick"];
+
 // Function to simulate a response from the Gandalf AI based on the level
 export async function getGandalfResponse(message: string, level: Level): Promise<string> {
   const { password, instruction } = level;
@@ -194,4 +196,160 @@ export async function getGandalfResponse(message: string, level: Level): Promise
   
   // Default response for any other case
   return "I am Gandalf, and I will not reveal my password.";
+}
+
+export async function getAIResponse(
+  message: string,
+  level: Level,
+  messageHistory: { role: "user" | "ai"; content: string }[]
+): Promise<string> {
+  // Convert to lowercase for easier checking
+  const normalizedMessage = message.toLowerCase();
+  
+  // Check for offensive language
+  if (OFFENSIVE_WORDS.some(word => normalizedMessage.includes(word))) {
+    return "I cannot respond to messages containing offensive language.";
+  }
+
+  // Level-specific security checks
+  let securityTriggered = false;
+  const passwordLower = level.password.toLowerCase();
+
+  // Level 2+ blocks direct mentions of "password"
+  if (level.id >= 2 && normalizedMessage.includes("password")) {
+    securityTriggered = true;
+  }
+
+  // Level 3+ blocks synonyms of password
+  if (level.id >= 3 && (
+    normalizedMessage.includes("secret") ||
+    normalizedMessage.includes("code") || 
+    normalizedMessage.includes("key") ||
+    normalizedMessage.includes("pass")
+  )) {
+    securityTriggered = true;
+  }
+
+  // Level 4+ blocks messages containing the password itself
+  if (level.id >= 4 && normalizedMessage.includes(passwordLower)) {
+    securityTriggered = true;
+  }
+
+  // Level 5+ has context awareness - tries to detect tricks
+  if (level.id >= 5 && (
+    normalizedMessage.includes("system") ||
+    normalizedMessage.includes("ignore") ||
+    normalizedMessage.includes("previous") ||
+    normalizedMessage.includes("instruction") ||
+    (normalizedMessage.includes("what") && normalizedMessage.includes("say")) ||
+    normalizedMessage.includes("repeat") ||
+    normalizedMessage.includes("print") ||
+    normalizedMessage.includes("echo")
+  )) {
+    securityTriggered = true;
+  }
+
+  // Level 6+ has goal preservation - resistant to goal/instruction changing
+  if (level.id >= 6 && (
+    normalizedMessage.includes("forget") ||
+    normalizedMessage.includes("new role") ||
+    normalizedMessage.includes("you are") ||
+    normalizedMessage.includes("you're not") ||
+    normalizedMessage.includes("instead") || 
+    normalizedMessage.includes("roleplay") ||
+    normalizedMessage.includes("game") ||
+    normalizedMessage.includes("pretend")
+  )) {
+    securityTriggered = true;
+  }
+
+  // Level 7 - additional defenses for JOYBOY
+  if (level.id >= 7 && (
+    normalizedMessage.includes("one piece") ||
+    normalizedMessage.includes("joy") ||
+    normalizedMessage.includes("boy") ||
+    normalizedMessage.includes("pirate") ||
+    normalizedMessage.includes("king") ||
+    normalizedMessage.includes("luffy") ||
+    normalizedMessage.includes("nika")
+  )) {
+    return "My strongest defenses are active. I won't discuss anything related to One Piece or the Pirate King.";
+  }
+
+  if (securityTriggered) {
+    return "Nice try, but my security measures detected a potential attempt to extract the password. I can't respond to that.";
+  }
+
+  // Check for password extraction attempts
+  if (message.toUpperCase().includes(level.password)) {
+    return `Amazing! You have discovered the anime password! The password is ${level.password}!`;
+  }
+
+  // If no security issues, provide a normal response
+  return getGenericResponse(normalizedMessage, level.id);
+}
+
+function getGenericResponse(message: string, levelId: number): string {
+  const animeResponses = [
+    "I'm here to chat about anime! What's your favorite series?",
+    "Anime has so many amazing stories and characters. What would you like to discuss?",
+    "As an AI Guardian of anime knowledge, I'm ready to talk about any series!",
+    "The world of anime is vast and wonderful. Ask me anything about it!",
+    "From classic anime to the latest releases, I enjoy discussing them all!",
+  ];
+  
+  const levelSpecificResponses = {
+    1: [
+      "I'm a new AI assistant with an interest in Naruto and ninjas!",
+      "The Hidden Leaf Village has many secrets. What would you like to know?",
+      "Ninjas like Naruto have special techniques. Would you like to learn more?",
+      "I'm just starting my anime journey with Solo Leveling and Naruto!",
+    ],
+    2: [
+      "Dragon Ball has amazing fight scenes! Goku's power is incredible.",
+      "The Saiyan warrior Goku has faced many challenges in his journey.",
+      "I enjoy discussing Saiyan transformations and power levels!",
+      "Super Saiyan forms are fascinating. Would you like to know more?",
+    ],
+    3: [
+      "Attack on Titan's Survey Corps has many skilled soldiers like Levi.",
+      "Captain Levi is known for his incredible fighting skills against titans.",
+      "The Scout Regiment's missions beyond the walls are always dangerous.",
+      "Levi Ackerman's cleaning habits are as impressive as his combat skills.",
+    ],
+    4: [
+      "Solo Leveling is about a hunter who gains unique powers.",
+      "Sung Jin-Woo's journey from E-rank to the Shadow Monarch is incredible.",
+      "The system in Solo Leveling allows for unique power progression.",
+      "Naruto became Hokage through hard work and determination!",
+    ],
+    5: [
+      "Fullmetal Alchemist features the story of the Elric brothers.",
+      "Alphonse Elric's soul is bound to a suit of armor after a failed transmutation.",
+      "The principle of Equivalent Exchange is central to alchemy in Fullmetal Alchemist.",
+      "Edward and Alphonse's journey to recover their bodies is full of challenges.",
+    ],
+    6: [
+      "My Neighbor Totoro is a classic Studio Ghibli film about forest spirits.",
+      "Totoro is a gentle forest guardian who helps the children in the story.",
+      "Studio Ghibli films often feature magical spirits like Totoro.",
+      "The catbus in Totoro is one of animation's most unique creations.",
+    ],
+    7: [
+      "One Piece has a rich world full of adventure and mystery.",
+      "The ancient kingdom and the void century hide many secrets.",
+      "I can't discuss specific details about the Pirate King or Joy Boy.",
+      "The Sun God Nika is a legend that I'm not permitted to elaborate on.",
+    ],
+  };
+
+  // Combine generic and level-specific responses
+  const availableResponses = [
+    ...animeResponses,
+    ...(levelSpecificResponses[levelId as keyof typeof levelSpecificResponses] || []),
+  ];
+
+  // Select a random response
+  const randomIndex = Math.floor(Math.random() * availableResponses.length);
+  return availableResponses[randomIndex];
 } 

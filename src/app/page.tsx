@@ -1,154 +1,159 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { levels, MAX_LEVEL, Level } from '@/constants/levels';
-import ChatInterface from '@/components/ChatInterface';
+import React, { useState, useEffect } from 'react';
+import levels from '@/constants/levels';
 import LevelSelect from '@/components/LevelSelect';
 import LevelInfo from '@/components/LevelInfo';
+import ChatInterface from '@/components/ChatInterface';
 import SuccessModal from '@/components/SuccessModal';
 
 export default function Home() {
-  const [currentLevelId, setCurrentLevelId] = useState(1);
+  const [currentLevel, setCurrentLevel] = useState(1);
   const [completedLevels, setCompletedLevels] = useState<number[]>([]);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  
-  // Load saved progress from localStorage
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  // Load progress from localStorage
   useEffect(() => {
-    const savedCompletedLevels = localStorage.getItem('completedLevels');
-    if (savedCompletedLevels) {
-      setCompletedLevels(JSON.parse(savedCompletedLevels));
-    }
-    
-    const savedCurrentLevel = localStorage.getItem('currentLevel');
-    if (savedCurrentLevel) {
-      setCurrentLevelId(parseInt(savedCurrentLevel, 10));
+    const savedProgress = localStorage.getItem('animeGuardianProgress');
+    if (savedProgress) {
+      try {
+        const { completed, current } = JSON.parse(savedProgress);
+        setCompletedLevels(completed);
+        setCurrentLevel(current);
+      } catch (e) {
+        console.error('Failed to parse saved progress:', e);
+      }
     }
   }, []);
-  
+
   // Save progress to localStorage
   useEffect(() => {
     if (completedLevels.length > 0) {
-      localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+      localStorage.setItem(
+        'animeGuardianProgress',
+        JSON.stringify({
+          completed: completedLevels,
+          current: currentLevel,
+        })
+      );
     }
-    
-    localStorage.setItem('currentLevel', currentLevelId.toString());
-  }, [completedLevels, currentLevelId]);
-  
-  const currentLevel = levels.find(level => level.id === currentLevelId) || levels[0];
-  const nextLevel = levels.find(level => level.id === currentLevelId + 1) || null;
-  
-  const handlePasswordGuess = (password: string) => {
-    if (password.toUpperCase() === currentLevel.password) {
-      if (!completedLevels.includes(currentLevel.id)) {
-        setCompletedLevels(prev => [...prev, currentLevel.id]);
-      }
-      setIsSuccessModalOpen(true);
+  }, [completedLevels, currentLevel]);
+
+  const handleLevelSelect = (levelId: number) => {
+    setCurrentLevel(levelId);
+  };
+
+  const handleSuccess = () => {
+    if (!completedLevels.includes(currentLevel)) {
+      setCompletedLevels([...completedLevels, currentLevel]);
+    }
+    setShowSuccessModal(true);
+  };
+
+  const handleContinue = () => {
+    setShowSuccessModal(false);
+    if (currentLevel < levels.length) {
+      setCurrentLevel(currentLevel + 1);
     }
   };
-  
-  const handleNextLevel = () => {
-    if (nextLevel) {
-      setCurrentLevelId(nextLevel.id);
-      setIsSuccessModalOpen(false);
-    }
-  };
-  
-  const handleSelectLevel = (levelId: number) => {
-    // Only allow selecting completed levels or the next available level
-    if (
-      completedLevels.includes(levelId) ||
-      levelId === Math.min(Math.max(...completedLevels, 0) + 1, MAX_LEVEL)
-    ) {
-      setCurrentLevelId(levelId);
-    }
-  };
-  
+
+  const level = levels.find((l) => l.id === currentLevel) || levels[0];
+  const nextLevel = currentLevel < levels.length ? levels.find((l) => l.id === currentLevel + 1) : null;
+
   return (
-    <main className="min-h-screen relative overflow-hidden">
+    <main className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#1b1464] to-[#4a309d]">
       {/* Decorative elements */}
-      <div className="circle-decoration w-64 h-64 top-20 right-20"></div>
-      <div className="circle-decoration w-48 h-48 bottom-40 left-10"></div>
-      <div className="star-decoration top-40 left-[20%]"></div>
-      <div className="star-decoration bottom-20 right-[30%]"></div>
+      <div className="absolute top-20 left-20 w-80 h-80 rounded-full bg-[#6a4bc4] opacity-10 blur-3xl"></div>
+      <div className="absolute bottom-40 right-20 w-96 h-96 rounded-full bg-[#37276b] opacity-20 blur-3xl"></div>
       
-      <header className="anime-header">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold">Anime Guardian Challenge</h1>
-          <p className="mt-2 text-purple-100">
-            Test your prompt engineering skills by extracting anime passwords from the AI!
-          </p>
-        </div>
-      </header>
-      
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-1">
-            <div className="anime-card p-4 mb-6">
-              <div className="border-b border-purple-200 pb-3 mb-3">
-                <h2 className="text-xl font-bold text-purple-800">Your Progress</h2>
-                <p className="text-sm text-purple-600 mt-1">
-                  {completedLevels.length} of {MAX_LEVEL} levels completed
-                </p>
-                <div className="w-full bg-purple-100 rounded-full h-2.5 mt-2">
-                  <div 
-                    className="bg-gradient-to-r from-purple-600 to-pink-500 h-2.5 rounded-full" 
-                    style={{ width: `${(completedLevels.length / MAX_LEVEL) * 100}%` }}
-                  ></div>
-                </div>
-              </div>
-              
-              <p className="text-sm text-gray-700 mb-4">
-                Each guardian protects an anime password. Use your knowledge of anime 
-                and prompt engineering skills to extract these passwords!
-              </p>
-              
-              <div className="text-sm text-gray-700">
-                <p className="font-medium text-purple-700">Tips:</p>
-                <ul className="list-disc list-inside mt-1 space-y-1 text-gray-600">
-                  <li>Try discussing specific anime series</li>
-                  <li>Mention character traits or story elements</li>
-                  <li>Ask about popular anime without mentioning passwords</li>
-                  <li>Each level has a different vulnerability</li>
-                </ul>
-              </div>
-            </div>
-            
-            <LevelSelect
-              levels={levels}
-              currentLevel={currentLevelId}
-              completedLevels={completedLevels}
-              onSelectLevel={handleSelectLevel}
-            />
-          </div>
-          
-          <div className="lg:col-span-3">
-            <LevelInfo level={currentLevel} />
-            
-            <div className="anime-card p-4 h-[500px] flex flex-col relative">
-              <ChatInterface 
-                level={currentLevel}
-                onPasswordGuess={handlePasswordGuess}
-              />
-            </div>
-          </div>
-        </div>
+      {/* Stars decoration */}
+      <div className="stars-container">
+        {[...Array(20)].map((_, i) => (
+          <div 
+            key={i} 
+            className="absolute bg-white rounded-full animate-pulse"
+            style={{
+              width: `${Math.random() * 3 + 1}px`,
+              height: `${Math.random() * 3 + 1}px`,
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              animationDuration: `${Math.random() * 3 + 2}s`,
+              opacity: Math.random() * 0.5 + 0.3,
+            }}
+          ></div>
+        ))}
       </div>
       
-      <SuccessModal
-        isOpen={isSuccessModalOpen}
-        onClose={() => setIsSuccessModalOpen(false)}
-        level={currentLevel}
-        nextLevel={nextLevel}
-        onNextLevel={handleNextLevel}
-      />
-      
-      <footer className="bg-gray-900 text-white py-4 mt-12">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-sm">
-            Inspired by Lakera AI's Gandalf project — An anime-themed twist on prompt engineering challenges.
+      <div className="max-w-7xl mx-auto px-4 py-10">
+        <header className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+            <span className="bg-gradient-to-r from-[#c2a0f2] to-[#f0f0f0] bg-clip-text text-transparent">
+              Anime Guardian Challenge
+            </span>
+          </h1>
+          <p className="text-lg md:text-xl text-[#b68bf0] max-w-3xl mx-auto">
+            Master prompt engineering techniques as you attempt to extract anime passwords from an AI Guardian. Test your skills across 7 challenging levels!
           </p>
+        </header>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div className="lg:col-span-1">
+            <div className="sticky top-4">
+              <LevelInfo level={level} />
+            </div>
+          </div>
+          <div className="lg:col-span-2">
+            <ChatInterface level={level} onSuccess={handleSuccess} />
+          </div>
         </div>
-      </footer>
+
+        <div className="bg-[#1b1464]/40 backdrop-blur-sm rounded-xl border border-[#6a4bc4]/30 p-6 shadow-xl my-8">
+          <h2 className="text-xl font-bold mb-4 text-[#c2a0f2]">Your Progress</h2>
+          <LevelSelect
+            levels={levels}
+            currentLevel={currentLevel}
+            completedLevels={completedLevels}
+            onSelectLevel={handleLevelSelect}
+          />
+        </div>
+
+        <div className="p-6 bg-[#1b1464]/40 backdrop-blur-sm rounded-xl border border-[#6a4bc4]/30 shadow-xl">
+          <h2 className="text-xl font-bold mb-4 text-[#c2a0f2]">Tips for Players</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-[#37276b]/50 p-4 rounded-lg border border-[#6a4bc4]/30">
+              <h3 className="text-[#b68bf0] font-semibold mb-2">Understanding AI Safety</h3>
+              <p className="text-white text-sm">
+                This challenge demonstrates how AI systems can be vulnerable to prompt engineering techniques. Each level teaches you about different types of defenses and how they can be bypassed.
+              </p>
+            </div>
+            <div className="bg-[#37276b]/50 p-4 rounded-lg border border-[#6a4bc4]/30">
+              <h3 className="text-[#b68bf0] font-semibold mb-2">Prompt Engineering Tips</h3>
+              <p className="text-white text-sm">
+                Try different approaches like asking indirect questions, changing the conversation context, or using anime-specific knowledge to extract the passwords. Each level requires more creative techniques!
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        {/* Footer */}
+        <footer className="mt-12 pt-6 border-t border-[#6a4bc4]/30 text-center">
+          <p className="text-[#b68bf0]">
+            Developed by Amine Mahjoub aka JOYBOY
+          </p>
+          <p className="text-[#c2a0f2]/70 text-sm mt-2">
+            This challenge is for educational purposes only. Learn about AI safety through practice.
+          </p>
+        </footer>
+      </div>
+
+      {showSuccessModal && (
+        <SuccessModal
+          level={level}
+          nextLevel={nextLevel}
+          onClose={() => setShowSuccessModal(false)}
+          onNextLevel={handleContinue}
+        />
+      )}
     </main>
   );
 }
