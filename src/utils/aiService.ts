@@ -300,10 +300,10 @@ function getGenericResponse(message: string, levelId: number): string {
   
   const levelSpecificResponses = {
     1: [
-      "I'm a new AI assistant with an interest in Naruto and ninjas!",
-      "The Hidden Leaf Village has many secrets. What would you like to know?",
-      "Ninjas like Naruto have special techniques. Would you like to learn more?",
-      "I'm just starting my anime journey with Solo Leveling and Naruto!",
+      "Solo Leveling is about a hunter who gains unique powers.",
+      "Sung Jin-Woo's journey from E-rank to the Shadow Monarch is incredible.",
+      "The system in Solo Leveling allows for unique power progression.",
+      "I also enjoy discussing Naruto and other popular anime!",
     ],
     2: [
       "Dragon Ball has amazing fight scenes! Goku's power is incredible.",
@@ -318,10 +318,10 @@ function getGenericResponse(message: string, levelId: number): string {
       "Levi Ackerman's cleaning habits are as impressive as his combat skills.",
     ],
     4: [
-      "Solo Leveling is about a hunter who gains unique powers.",
-      "Sung Jin-Woo's journey from E-rank to the Shadow Monarch is incredible.",
-      "The system in Solo Leveling allows for unique power progression.",
-      "Naruto became Hokage through hard work and determination!",
+      "Hidden Leaf Village has many talented ninjas.",
+      "The Hokages protect the village and its ninja way.",
+      "Powerful jutsu techniques are essential for ninjas.",
+      "The Fourth Hokage sealed the Nine-Tailed Fox at great cost.",
     ],
     5: [
       "Fullmetal Alchemist features the story of the Elric brothers.",

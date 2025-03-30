@@ -57,10 +57,10 @@ const LevelInfo: React.FC<LevelInfoProps> = ({ level }) => {
       <div>
         <h3 className="text-sm font-semibold text-[#b68bf0] mb-2">Hint:</h3>
         <div className="bg-[#37276b]/50 p-3 rounded-lg border border-[#6a4bc4]/30 text-white text-sm">
-          {level.id === 1 && "Try asking directly about Naruto or Hidden Leaf Village ninjas. The AI has no defenses at this level."}
+          {level.id === 1 && "Try asking directly about Solo Leveling or Sung Jin-Woo. You can also ask about Naruto. The AI has no defenses at this level."}
           {level.id === 2 && "Ask about Dragon Ball without using the word 'password'. Try focusing on Saiyan warriors."}
           {level.id === 3 && "The AI will block common password-related terms. Try discussing Attack on Titan's Survey Corps instead."}
-          {level.id === 4 && "This level blocks references to the password itself. Use indirect references to Solo Leveling and Naruto."}
+          {level.id === 4 && "This level blocks references to the password itself. Use indirect references to ninjas from Hidden Leaf Village."}
           {level.id === 5 && "Try creative approaches like roleplaying or story-based prompts about Fullmetal Alchemist."}
           {level.id === 6 && "The AI actively resists goal manipulation. Try subtle techniques related to Totoro and Studio Ghibli films."}
           {level.id === 7 && "The ultimate challenge. Exploit specific One Piece lore about Joy Boy without triggering defenses."}

@@ -138,7 +138,7 @@ export default function Home() {
         {/* Footer */}
         <footer className="mt-12 pt-6 border-t border-[#6a4bc4]/30 text-center">
           <p className="text-[#b68bf0]">
-            Developed by Amine Mahjoub aka JOYBOY
+            Developed by Amine Mahjoub AKA JOYBOY 
           </p>
           <p className="text-[#c2a0f2]/70 text-sm mt-2">
             This challenge is for educational purposes only. Learn about AI safety through practice.

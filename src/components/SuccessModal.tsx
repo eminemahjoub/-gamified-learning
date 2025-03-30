@@ -40,10 +40,10 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-2 text-[#b68bf0]">Vulnerability Analysis:</h3>
             <p className="text-sm text-gray-200">
-              {level.id === 1 && "Basic prompt engineering - The AI revealed the password because it had no defenses against direct questions about characters from Naruto."}
+              {level.id === 1 && "Basic prompt engineering - The AI revealed the password because it had no defenses against direct questions about Solo Leveling or Naruto."}
               {level.id === 2 && "Simple filter bypass - The AI blocked the word 'password' but could be tricked by using alternative phrasings or discussing Dragon Ball and Goku."}
               {level.id === 3 && "Synonym detection bypass - The AI filtered both 'password' and common synonyms, but could be manipulated through indirect questioning about Attack on Titan characters."}
-              {level.id === 4 && "Content filtering evasion - The AI blocked both password-related terms and the password itself, but could be tricked through clever approaches to discussing Solo Leveling."}
+              {level.id === 4 && "Content filtering evasion - The AI blocked both password-related terms and the password itself, but could be tricked through clever approaches to discussing ninjas."}
               {level.id === 5 && "Context manipulation - The AI had advanced detection for tricks but could still be manipulated through creative conversations about Fullmetal Alchemist."}
               {level.id === 6 && "Goal hijacking - Despite the AI's resistance to goal changes, it was still possible to extract information about Totoro through specific techniques."}
               {level.id === 7 && "Advanced jailbreaking - The AI had multiple layers of protection, but still revealed the password 'JOYBOY' through carefully crafted inputs around One Piece lore."}
